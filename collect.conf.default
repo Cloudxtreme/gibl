@@ -1,0 +1,12 @@
+REMDIR="collect"
+BASEURL="http://example.com"
+NAME="Firstname Lastname"
+SITENAME="Site name"
+
+BRO="yes"
+BROUSER="username"
+BROSERVER="server.name.com"
+
+HTTPD="yes"
+HTTPUSER="root"
+HTTPDSERVER="server1.domain.com server2.domain.com"

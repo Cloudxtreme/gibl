@@ -1,0 +1,2 @@
+MYNET=a\.b\.c\.d
+FILES=$(find /nsm/bro/logs/ -name "conn.*" -mtime -14 -type f -print | xargs)
