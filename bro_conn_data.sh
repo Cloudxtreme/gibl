@@ -96,7 +96,7 @@ search "22|23|992" "" >> $TMPDIR/$LIST.txt
 # - 443:	HTTPS
 LIST="closed"
 header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > $TMPDIR/$LIST.txt
-search "25|80|443" "-v" >> $TMPDIR/$LIST.txt
+search "25|80|443|7000|7001|7002|7003|7004|7005|7007" "-v" >> $TMPDIR/$LIST.txt
 
 # Collect data.
 if [ ! -d output ]; then
