@@ -25,7 +25,7 @@ if [[ $BRO == "yes" ]]; then
 
   # Connect to bro server and get data.
   ssh $BROUSER@$BROSERVER mkdir -p $REMDIR
-  scp -q bro.conf bro_conn_data.sh common.sh $BROUSER@$BROSERVER:$REMDIR/
+  scp -q collect.conf bro_conn_data.sh common.sh $BROUSER@$BROSERVER:$REMDIR/
   ssh $BROUSER@$BROSERVER "cd ./$REMDIR && chmod +x bro_conn_data.sh"
   ssh $BROUSER@$BROSERVER "cd ./$REMDIR && ./bro_conn_data.sh"
   scp -q $BROUSER@$BROSERVER:$REMDIR/output/* output/
@@ -43,7 +43,7 @@ if [[ $HTTPD == "yes" ]]; then
   header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > output/$LIST.txt
   for SERVER in $HTTPSERVER; do
     ssh $HTTPUSER@$SERVER mkdir -p $REMDIR
-    scp -q httpd.conf httpd.sh common.sh $HTTPUSER@$SERVER:$REMDIR/
+    scp -q collect.conf httpd.sh common.sh $HTTPUSER@$SERVER:$REMDIR/
     ssh $HTTPUSER@$SERVER "cd ./$REMDIR && chmod +x httpd.sh"
     ssh $HTTPUSER@$SERVER "cd ./$REMDIR && ./httpd.sh" >> output/tmp.txt
   done
