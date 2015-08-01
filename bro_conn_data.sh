@@ -5,7 +5,7 @@
 # Script to collect bad actors from bro.org data.
 #
 
-CONF="bro.conf"
+CONF="collect.conf"
 
 . common.sh
 conf

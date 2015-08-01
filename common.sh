@@ -6,8 +6,8 @@
 #
 
 # Common variables
-DATE=$(/usr/bin/date +%Y-%m-%d)
-YEAR=$(/usr/bin/date +%Y)
+DATE=$(date +%Y-%m-%d)
+YEAR=$(date +%Y)
 
 # Function: conf
 # Description: Load config file.
@@ -43,5 +43,5 @@ function eexit(){
 function header(){
 	echo "; $1 DROP list $2 $3 - (c) $4 $5"
 	echo "; $6/$2.txt"
-	echo "; Last-Modified: $(/usr/bin/date)"
+	echo "; Last-Modified: $(date)"
 }

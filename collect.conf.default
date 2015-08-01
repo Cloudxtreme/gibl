@@ -9,4 +9,12 @@ BROSERVER="server.name.com"
 
 HTTPD="yes"
 HTTPUSER="root"
-HTTPDSERVER="server1.domain.com server2.domain.com"
+HTTPSERVER="server1.domain.com server2.domain.com"
+
+MYNET="x\.y\.z"
+
+GOODURLS="/robots.txt|/security"
+BADURLS1="myadmin|setup.php|cgi-bin/php|/admin.*php|wp-login.php"
+BADURLS2="/rom|scripts|http://|/manager|/Ringing|nowherereally|/hello"
+BADURLS3="/*\.asp|/administrator"
+BADURLS="$BADURLS1|$BADURLS2|$BADURLS3"

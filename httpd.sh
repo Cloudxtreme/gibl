@@ -5,7 +5,7 @@
 # Script to collect bad actors from apache httpd logs.
 #
 
-CONF="httpd.conf"
+CONF="collect.conf"
 
 . common.sh
 conf
