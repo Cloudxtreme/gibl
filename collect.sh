@@ -63,5 +63,5 @@ fi
 if [[ $POSTFIX == "yes" ]]; then
   LIST="postfix"
   header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > output/$LIST.txt
-  run_file_and_get_data LIST REMDIR PFIXUSER $LIST.sh "$PFIXSERVER"
+  run_file_and_get_data $LIST $REMDIR $PFIXUSER $LIST.sh "$PFIXSERVER"
 fi
