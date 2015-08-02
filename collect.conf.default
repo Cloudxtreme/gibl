@@ -11,6 +11,10 @@ HTTPD="yes"
 HTTPUSER="root"
 HTTPSERVER="server1.domain.com server2.domain.com"
 
+POSTFIX="yes"
+PFIXUSER="root"
+PFIXSERVER="mx.domain.com"
+
 MYNET="x\.y\.z"
 
 GOODURLS="/robots.txt|/security"
@@ -18,3 +22,10 @@ BADURLS1="myadmin|setup.php|cgi-bin/php|/admin.*php|wp-login.php"
 BADURLS2="/rom|scripts|http://|/manager|/Ringing|nowherereally|/hello"
 BADURLS3="/*\.asp|/administrator|/muieblackcat"
 BADURLS="$BADURLS1|$BADURLS2|$BADURLS3"
+
+IP172_1="172\.16\.|172\.17\.|172\.18\.|172\.19\.|172\.20\.|172\.21\."
+IP172_2="172\.22\.|172\.23\.|172\.24\.|172\.25\.|172\.26\.|172\.27\."
+IP172_3="172\.28\.|172\.29\.|172\.30\.|172\.31\."
+LOCAL="0\.0\.0\.0|10\.|127\.|$IP172_1|$IP172_2|$IP172_3|192\.168|255\.255\.255\.255"
+
+IGNORE="$LOCAL|$MYNET"
