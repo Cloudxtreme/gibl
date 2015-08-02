@@ -16,13 +16,33 @@ else
   rm -f output/*
 fi
 
-# Handle bro
+# Common things to check for in config.
+[[ ! ($REMDIR && ${REMDIR-x}) ]] && eexit "REMDIR not set in $CONF."
+[[ ! ($IGNORE && ${IGNORE-x}) ]] && eexit "IGNORE not set in $CONF."
+
+# Validate Bro config.
 if [[ $BRO == "yes" ]]; then
   # Check bro part of CONF
   [[ ! ($BROUSER && ${BROUSER-x}) ]] &&	eexit "BROUSER not set."
   [[ ! ($BROSERVER && ${BROSERVER-x}) ]] && eexit "BROSERVER not set."
-  [[ ! ($REMDIR && ${REMDIR-x}) ]] && eexit "REMDIR not set in $CONF."
+fi
 
+# Validate apache httpd config.
+if [[ $HTTPD == "yes" ]]; then
+  # Check bro part of CONF
+  [[ ! ($HTTPUSER && ${HTTPUSER-x}) ]] &&	eexit "HTTPUSER not set."
+  [[ ! ($HTTPSERVER && ${HTTPSERVER-x}) ]] && eexit "HTTPSERVER not set."
+fi
+
+# Validate postfix config.
+if [[ $POSTFIX == "yes" ]]; then
+  # Check bro part of CONF
+  [[ ! ($PFIXUSER && ${PFIXUSER-x}) ]] &&	eexit "PFIXUSER not set."
+  [[ ! ($PFIXSERVER && ${PFIXSERVER-x}) ]] && eexit "PFIXSERVER not set."
+fi
+
+# Get bro data.
+if [[ $BRO == "yes" ]]; then
   # Connect to bro server and get data.
   ssh $BROUSER@$BROSERVER mkdir -p $REMDIR
   scp -q collect.conf bro_conn_data.sh common.sh $BROUSER@$BROSERVER:$REMDIR/
@@ -32,22 +52,16 @@ if [[ $BRO == "yes" ]]; then
   ssh $BROUSER@$BROSERVER "cd ./$REMDIR && rm -f output/*"
 fi
 
+# Connect to http servers and get data.
 if [[ $HTTPD == "yes" ]]; then
-  # Check bro part of CONF
-  [[ ! ($HTTPUSER && ${HTTPUSER-x}) ]] &&	eexit "HTTPUSER not set."
-  [[ ! ($HTTPSERVER && ${HTTPSERVER-x}) ]] && eexit "HTTPSERVER not set."
-  [[ ! ($REMDIR && ${REMDIR-x}) ]] && eexit "REMDIR not set in $CONF."
-
-  # Connect to http server and get data.
   LIST="httpd"
   header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > output/$LIST.txt
-  for SERVER in $HTTPSERVER; do
-    ssh $HTTPUSER@$SERVER mkdir -p $REMDIR
-    scp -q collect.conf httpd.sh common.sh $HTTPUSER@$SERVER:$REMDIR/
-    ssh $HTTPUSER@$SERVER "cd ./$REMDIR && chmod +x httpd.sh"
-    ssh $HTTPUSER@$SERVER "cd ./$REMDIR && ./httpd.sh" >> output/tmp.txt
-  done
-  cat output/tmp.txt | \
-    sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n >> output/$LIST.txt
-  rm output/tmp.txt
+  run_file_and_get_data $LIST $REMDIR $HTTPUSER $LIST.sh "$HTTPSERVER"
+fi
+
+# Connect to postfix servers and get data.
+if [[ $POSTFIX == "yes" ]]; then
+  LIST="postfix"
+  header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > output/$LIST.txt
+  run_file_and_get_data LIST REMDIR PFIXUSER $LIST.sh "$PFIXSERVER"
 fi
