@@ -28,7 +28,11 @@ if [[ ! ($FILES && ${FILES-x}) ]]; then
   FILES=$(find $DIR -name "access*log*" -mtime -17 -type f | xargs)
 fi
 
-zcat -f $FILES | grep "\" 404 " | \
+zcat -f $FILES | \
+	grep "\" 404 " | \
   egrep -v "(GET|HEAD|POST) ($GOODURLS)" | \
   egrep "($BADURLS)" | \
-  cut -f1 -d\  | sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | uniq
+  cut -f1 -d\  | \
+	egrep -v $IGNORE | \
+	sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | \
+	uniq
