@@ -45,3 +45,29 @@ function header(){
 	echo "; $6/$2.txt"
 	echo "; Last-Modified: $(date)"
 }
+
+# Function: run_file_and_get_data
+# Description: Get data for one list from one script
+# Arguments:
+# - LIST
+# - REMDIR
+# - USER
+# - SCRIPT
+# - SERVERS
+function run_file_and_get_data(){
+  LIST=$1
+  REMDIR=$2
+  USER=$3
+  SCRIPT=$4
+  SERVERS=$5
+
+  for SERVER in $SERVERS; do
+    ssh $USER@$SERVER mkdir -p $REMDIR
+    scp -q collect.conf common.sh $SCRIPT $USER@$SERVER:$REMDIR/
+    ssh $USER@$SERVER "cd ./$REMDIR && chmod +x $SCRIPT"
+    ssh $USER@$SERVER "cd ./$REMDIR && ./$SCRIPT" >> output/tmp.txt
+  done
+  cat output/tmp.txt | \
+    sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n >> output/$LIST.txt
+  rm output/tmp.txt
+}
