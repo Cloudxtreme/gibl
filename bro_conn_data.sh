@@ -7,6 +7,7 @@
 
 CONF="collect.conf"
 
+# shellcheck disable=SC1091
 . common.sh
 conf
 
@@ -22,7 +23,7 @@ if [[ ! ($MYNET && ${MYNET-x}) ]]; then
 fi
 
 if [[ ! ($FILES && ${FILES-x}) ]]; then
-	FILES=$(find /nsm/bro/logs/ -name "conn.*" -mtime -14 -type f -print | xargs)
+	FILES=($(find /nsm/bro/logs/ -name "conn.*" -mtime -14 -type f -print0 | xargs -0))
 fi
 
 if [[ ! ($NAME && ${NAME-x}) ]]; then
@@ -40,16 +41,16 @@ fi
 TMPDIR=$(/bin/mktemp -d)
 
 function cleanup(){
-	rm -rf $TMPDIR
+	rm -rf "$TMPDIR"
 	exit 0
 }
 trap cleanup ERR
 
 function search(){
-	zcat $FILES | bro-cut id.orig_h id.resp_p | \
+	zcat "${FILES[@]}" | bro-cut id.orig_h id.resp_p | \
 		egrep -v "^($IGNORE)" | \
 		grep -v ":" | \
-		egrep $2 $'\t'"($1)"'$' | \
+		egrep "$2" $'\t'"($1)"'$' | \
 		awk '{print $1}' | \
 		sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | uniq
 }
@@ -61,8 +62,8 @@ function search(){
 # - 3306:	MySQL
 # - 5432:	PostgreSQL
 LIST="database"
-header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > $TMPDIR/$LIST.txt
-search "1433|1434|1521|3306|5432" "" >> $TMPDIR/$LIST.txt
+header "$SITENAME" "$LIST" "$DATE" "$YEAR" "$NAME" "$BASEURL" > "$TMPDIR/$LIST.txt"
+search "1433|1434|1521|3306|5432" "" >> "$TMPDIR/$LIST.txt"
 
 # Generate list of misc searches
 # - 631:	Internet Printing Protocol
@@ -72,31 +73,31 @@ search "1433|1434|1521|3306|5432" "" >> $TMPDIR/$LIST.txt
 # - 10000:	webmin
 # - 10082:	amanda backup services
 LIST="misc"
-header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > $TMPDIR/$LIST.txt
-search "631|1099|4899|5555|10000|10082" "" >> $TMPDIR/$LIST.txt
+header "$SITENAME" "$LIST" "$DATE" "$YEAR" "$NAME" "$BASEURL" > "$TMPDIR/$LIST.txt"
+search "631|1099|4899|5555|10000|10082" "" >> "$TMPDIR/$LIST.txt"
 
 # Generate list of ssh and telnet searches
 # - 22:		SSH
 # - 23:		Telnet
 # - 992:	Telnet over SSL
 LIST="shell"
-header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > $TMPDIR/$LIST.txt
-search "22|23|992" "" >> $TMPDIR/$LIST.txt
+header "$SITENAME" "$LIST" "$DATE" "$YEAR" "$NAME" "$BASEURL" > "$TMPDIR/$LIST.txt"
+search "22|23|992" "" >> "$TMPDIR/$LIST.txt"
 
 # All except open ports
 # - 25:		SMTP
 # - 80:		HTTP
 # - 443:	HTTPS
 LIST="closed"
-header $SITENAME $LIST $DATE $YEAR "$NAME" $BASEURL > $TMPDIR/$LIST.txt
-search "25|80|443|7000|7001|7002|7003|7004|7005|7007" "-v" >> $TMPDIR/$LIST.txt
+header "$SITENAME" "$LIST" "$DATE" "$YEAR" "$NAME" "$BASEURL" > "$TMPDIR/$LIST.txt"
+search "25|80|443|7000|7001|7002|7003|7004|7005|7007" "-v" >> "$TMPDIR/$LIST.txt"
 
 # Collect data.
 if [ ! -d output ]; then
 	mkdir output
 fi
 rm -f output/*
-cp $TMPDIR/* output
-rm -rf $TMPDIR
+cp "$TMPDIR"/* output
+rm -rf "$TMPDIR"
 
 exit 0
