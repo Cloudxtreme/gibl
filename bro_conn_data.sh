@@ -50,7 +50,9 @@ function search(){
 	zcat "${FILES[@]}" | bro-cut id.orig_h id.resp_p | \
 		egrep -v "^($IGNORE)" | \
 		grep -v ":" | \
-		egrep "$2" $'\t'"($1)"'$' | \
+		# shellcheck disable=SC2086
+        # shellcheck disable=SC2086
+		egrep $2 $'\t'"($1)"'$' | \
 		awk '{print $1}' | \
 		sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | uniq
 }
