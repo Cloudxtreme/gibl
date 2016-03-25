@@ -48,8 +48,10 @@ if [[ $BRO == "yes" ]]; then
     # shellcheck disable=SC2029
     ssh "$BROUSER"@"$BROSERVER" mkdir -p "$REMDIR"
     scp -q collect.conf bro_conn_data.sh common.sh "$BROUSER"@"$BROSERVER":"$REMDIR"/
-    ssh "$BROUSER"@"$BROSERVER" cd ./"$REMDIR" && chmod +x bro_conn_data.sh
-    ssh "$BROUSER"@"$BROSERVER" cd ./"$REMDIR" && ./bro_conn_data.sh
+    # shellcheck disable=SC2029
+    ssh "$BROUSER"@"$BROSERVER" "cd ./$REMDIR && chmod +x bro_conn_data.sh"
+    # shellcheck disable=SC2029
+    ssh "$BROUSER"@"$BROSERVER" "cd ./$REMDIR && ./bro_conn_data.sh"
     scp -q "$BROUSER"@"$BROSERVER":"$REMDIR"/output/* output/
     # shellcheck disable=SC2029
     ssh "$BROUSER"@"$BROSERVER" "cd ./$REMDIR && rm -f output/*"
